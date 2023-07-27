@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- loading speed will increase -->
+  <script src="../01_first/lib/react.js"></script>
+  <script src="../01_first/lib/react-dom.js"></script>
+
+  <!-- Don't use this in production: -->
+  <!-- should use in webpack -->
+  <script src="../01_first/lib/babel.js"></script>
+  <script src="./data.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      text-align: center;
+    }
+    thead {
+      background-color: #f2f2f2;
+    }
+    td, th {
+      padding: 1rem 2rem;
+      border: 1px solid #aaa;
+    }
+  </style>
+  <title>Shoping Cart</title>
+</head>
+<body>
+  <div id="root"></div>
+  <!-- must add type="text/babel" -->
+  <script type="text/babel">
+    class MyApp extends React.Component {
+      constructor() {
+        super();
+
+        this.state = {
+          books: books
+        }
+      }
+
+      calCount (index, count) {
+        const newBooks = [...this.state.books];
+        newBooks[index].count += count;
+        this.setState({books: newBooks});
+      }
+
+      deleteBooks (index) {
+        const newBooks = [...this.state.books];
+        newBooks.splice(index,1);
+        this.setState({books: newBooks});
+      }
+
+      renderBookList () {
+        const { books } = this.state;
+                // let totalPrice = 0;
+        // for (let i = 0; i < books.length; i++) {
+        //   const book = books[i];
+        //   totalPrice += book.price * book.count;
+        // }
+
+        const totalPrice = books.reduce((preValue, item) => {
+          return preValue + item.count * item.price;
+        }, 0);
+        return (
+          <div>
+            <h2>Books</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>No.</th>  
+                  <th>Name</th>
+                  <th>Publish Date</th>
+                  <th>Price</th>
+                  <th>Number</th>
+                  <th>Action</th>
+                </tr>  
+              </thead>
+              <tbody>
+                {books.map((item, index) => {
+                  return (
+                    <tr key={item.id}>
+                      <td>{index + 1}</td>
+                      <td>{item.name}</td>
+                      <td>{item.date}</td>
+                      <td>{item.price}</td>
+                      <td><button disabled={item.count < 1 && true} onClick={() => this.calCount(index, -1)}>-</button>{item.count}<button onClick={() => this.calCount(index, 1)}>+</button></td>
+                      <td><button onClick={() => this.deleteBooks(index)}>delete</button></td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+            <h2>Total price: {totalPrice}</h2>
+          </div>
+        )
+      }
+
+      renderEmptyList () {
+        return (
+          <div>
+            <h2>Shopping Cart is empty, please add some books</h2>  
+          </div>
+        )
+      }
+
+      render() {
+        const { books } = this.state;
+
+        return (
+          books.length ? this.renderBookList() : this.renderEmptyList()
+        )
+      }
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<MyApp />);
+
+  </script>
+  <!--
+    Note: this page is a great way to try React but it's not suitable for production.
+    It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+    Read this page for starting a new React project with JSX:
+    https://react.dev/learn/start-a-new-react-project
+
+    Read this page for adding React with JSX to an existing project:
+    https://react.dev/learn/add-react-to-an-existing-project
+  -->
+</body>
+</html>
