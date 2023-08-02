@@ -14,7 +14,7 @@ export default class MainBanner extends Component {
         <ul>
           {banners.map((item,index) => {
             return (
-              <li key={item}>{item}</li>
+              <li key={item.acm}>{item.title}</li>
             )
           })}
         </ul>
