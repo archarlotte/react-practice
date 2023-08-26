@@ -10,6 +10,7 @@ const HeaderWrapper = styled.div`
   height: 5rem;
   /* height: 80px; */
   border-bottom: 1px solid #eee;
+  padding: 0 40px;
 `
 const AppHeader = memo(() => {
   return (
