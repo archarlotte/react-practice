@@ -1,10 +1,10 @@
 import { Rating } from '@mui/material';
 import React, { memo } from 'react';
 import styled from 'styled-components';
-
+import Slider from 'react-slick';
 const RoomItemWrapper = styled.div`
   box-sizing: border-box;
-  width: ${(props) => props.itemWidth};
+  width: ${(props) => props.itemwidth};
   padding: 8px;
   margin: 8px 0;
   flex-shrink: 0;
@@ -22,12 +22,25 @@ const RoomItemWrapper = styled.div`
       top: 0;
       width: 100%;
       height: 100%;
+      object-fit: cover;
     }
   }
 
-  .title {
+  .slick-slide img {
+    /* position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 99; */
+  }
+  .slick-next {
+  }
+  */ > .title {
     padding-top: 4px;
   }
+
   .name {
     font-weight: 600;
     padding-top: 4px;
@@ -50,9 +63,15 @@ const RoomItemWrapper = styled.div`
 
 const RoomItem = memo((props) => {
   const { itemData, width = '25%' } = props;
-
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
   return (
-    <RoomItemWrapper itemWidth={width}>
+    <RoomItemWrapper itemwidth={width}>
       <div className="cover">
         <img src={itemData.picture_url} alt="" />
       </div>
@@ -66,7 +85,7 @@ const RoomItem = memo((props) => {
           value={itemData.star_rating}
           readOnly
           sx={{
-            color: itemData.star_rating_color,
+            color: '#008489',
             fontSize: 14,
           }}
         />

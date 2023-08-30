@@ -12,6 +12,7 @@ const RoomTabWrapper = styled.div`
     text-align: center;
     padding: 14px 16px;
     margin: 4px;
+    white-space: nowrap;
 
     &.active {
       color: white;
