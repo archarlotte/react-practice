@@ -1,16 +1,18 @@
 import RoomItem from '@/components/room/RoomItem';
+import { changeDetailContent } from '@/store/detailAction';
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const EntireRoomWrapper = styled.div`
   position: relative;
-  >.title {
+  > .title {
     font-size: 22px;
     padding: 8px;
   }
-  >.content {
+  > .content {
     display: flex;
     flex-wrap: wrap;
   }
@@ -30,12 +32,18 @@ const EntireRoom = memo((props) => {
     totalCount: state.entire.totalCount,
     isLoading: state.entire.isLoading,
   }));
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const toDetail = (details) => {
+    dispatch(changeDetailContent(details));
+    navigate('/detail');
+  };
   return (
     <EntireRoomWrapper>
       <div className="title">{totalCount}</div>
       <div className="content">
         {roomList?.map((item) => {
-          return <RoomItem itemData={item} width={'20%'} />;
+          return <RoomItem itemData={item} width={'20%'} toDetail={toDetail} />;
         })}
       </div>
       {isLoading && <div className="white-cover"></div>}

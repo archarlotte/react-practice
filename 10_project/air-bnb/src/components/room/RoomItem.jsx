@@ -1,13 +1,88 @@
 import { Rating } from '@mui/material';
-import React, { memo } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { Carousel } from 'antd';
 import Slider from 'react-slick';
+import IconArrowLeft from '@/assets/svg/icon-arrow-left';
+import IconArrowRight from '@/assets/svg/icon-arrow-right';
+import Indicator from '../Indicator';
+import classnames from 'classnames';
+
 const RoomItemWrapper = styled.div`
   box-sizing: border-box;
   width: ${(props) => props.itemwidth};
   padding: 8px;
   margin: 8px 0;
   flex-shrink: 0;
+
+  .inner {
+    width: 100%;
+  }
+  .slider {
+    position: relative;
+    cursor: pointer;
+
+    .indicator {
+      position: absolute;
+      z-index: 9;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: 30%;
+      overflow: hidden;
+
+      .dot-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20%;
+
+        .dot {
+          width: 6px;
+          height: 6px;
+          background-color: #fff;
+          border-radius: 50%;
+
+          &.active {
+            width: 8px;
+            height: 8px;
+          }
+        }
+      }
+    }
+
+    &:hover {
+      .control {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+
+    .control {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: 0;
+      display: none;
+      bottom: 0;
+      color: #fff;
+
+      .btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 63px;
+        height: 100%;
+        background: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+
+        &.right {
+          background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+        }
+      }
+    }
+  }
 
   .cover {
     box-sizing: border-box;
@@ -26,18 +101,7 @@ const RoomItemWrapper = styled.div`
     }
   }
 
-  .slick-slide img {
-    /* position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 99; */
-  }
-  .slick-next {
-  }
-  */ > .title {
+  > .title {
     padding-top: 4px;
   }
 
@@ -62,34 +126,78 @@ const RoomItemWrapper = styled.div`
 `;
 
 const RoomItem = memo((props) => {
-  const { itemData, width = '25%' } = props;
-  var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+  const { itemData, width = '25%', toDetail } = props;
+  const carouselRef = useRef();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const handleClick = (isRight) => {
+    let newIndex = isRight ? selectedIndex + 1 : selectedIndex - 1;
+    if (newIndex < 0) {
+      newIndex = itemData?.picture_urls.length - 1;
+    }
+    if (newIndex > itemData?.picture_urls.length - 1) {
+      newIndex = 0;
+    }
+    setSelectedIndex(newIndex);
+    isRight ? carouselRef?.current?.next() : carouselRef?.current?.prev();
   };
+
   return (
     <RoomItemWrapper itemwidth={width}>
-      <div className="cover">
-        <img src={itemData.picture_url} alt="" />
-      </div>
-      <div className="title">{itemData.verify_info.messages.join(' . ')}</div>
-      <div className="name">{itemData.name}</div>
-      <div className="price">{itemData.price_format}/night</div>
-      <div className="rating">
-        {' '}
-        <Rating
-          name="read-only"
-          value={itemData.star_rating}
-          readOnly
-          sx={{
-            color: '#008489',
-            fontSize: 14,
-          }}
-        />
-        {itemData.star_rating} {itemData.bottom_info?.content}
+      <div className="inner">
+        {itemData?.picture_urls ? (
+          <div className="slider">
+            <div className="indicator">
+              <Indicator index={selectedIndex}>
+                {itemData?.picture_urls?.map((item, index) => {
+                  return (
+                    <div className="dot-item">
+                      <span className={classnames('dot', { active: selectedIndex === index })}></span>
+                    </div>
+                  );
+                })}
+              </Indicator>
+            </div>
+            <div className="control">
+              <div className="btn left" onClick={() => handleClick(false)}>
+                <IconArrowLeft />
+              </div>
+              <div className="btn right" onClick={() => handleClick(true)}>
+                <IconArrowRight />
+              </div>
+            </div>
+            <Carousel dots={false} ref={carouselRef}>
+              {itemData?.picture_urls?.map((item) => {
+                return (
+                  <div className="cover">
+                    <img src={item} alt="" />
+                  </div>
+                );
+              })}
+            </Carousel>
+          </div>
+        ) : (
+          <div className="cover">
+            <img src={itemData.picture_url} alt="" />
+          </div>
+        )}
+
+        <div className="title">{itemData.verify_info.messages.join(' . ')}</div>
+        <div className="name" onClick={(e) => toDetail(itemData)}>
+          {itemData.name}
+        </div>
+        <div className="price">{itemData.price_format}/night</div>
+        <div className="rating">
+          <Rating
+            name="read-only"
+            value={itemData.star_rating}
+            readOnly
+            sx={{
+              color: '#008489',
+              fontSize: 14,
+            }}
+          />
+          {itemData.star_rating} {itemData.bottom_info?.content}
+        </div>
       </div>
     </RoomItemWrapper>
   );

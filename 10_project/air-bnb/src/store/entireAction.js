@@ -9,13 +9,5 @@ const fetchEntireRoomListAction = createAsyncThunk('entire/roomList', async (pag
   dispatch(changeLoadingAction(false));
   return dispatch(changeEntireRoomListAction({ res, page }));
 });
-// const fetchCurrentPageAction = createAsyncThunk('fetchData', async (payload, { dispatch }) => {
-//   const res = await getEntireRoomList();
-//   return dispatch(changefetchCurrentPageAction(res));
-// });
-// const fetchTotalCountAtction = createAsyncThunk('fetchData', async (payload, { dispatch }) => {
-//   const res = await getEntireRoomList();
-//   return dispatch(changefetchTotalCountAtction(res));
-// });
 
 export { fetchEntireRoomListAction };
