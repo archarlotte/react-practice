@@ -1,12 +1,16 @@
-import { useRoutes } from 'react-router-dom';
+import { useLocation, useRoutes } from 'react-router-dom';
 import routes from './router';
-import AppHeader from './components/app-header/index';
 import Footer from './components/Footer';
+import { useEffect } from 'react';
 
 function App() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div>
-      <AppHeader />
       <div className="page">{useRoutes(routes)}</div>
       <Footer />
     </div>

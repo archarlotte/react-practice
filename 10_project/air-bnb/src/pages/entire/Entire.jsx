@@ -1,3 +1,4 @@
+import AppHeader from '@/components/app-header';
 import { fetchEntireRoomListAction } from '@/store/entireAction';
 import React, { memo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -7,7 +8,9 @@ import EntirePagnation from './EntirePagnation';
 import EntireRoom from './EntireRoom';
 
 const EntireWrapper = styled.div`
-  margin-top: 128px;
+  .entire-content {
+    margin-top: 120px;
+  }
 `;
 const Entire = memo(() => {
   const dispatch = useDispatch();
@@ -17,9 +20,12 @@ const Entire = memo(() => {
   }, []);
   return (
     <EntireWrapper>
+      <AppHeader isFixed={true} />
       <EntireFilter />
-      <EntireRoom />
-      <EntirePagnation />
+      <div className='entire-content'>
+        <EntireRoom />
+        <EntirePagnation />
+      </div>
     </EntireWrapper>
   );
 });

@@ -32,18 +32,13 @@ const EntireRoom = memo((props) => {
     totalCount: state.entire.totalCount,
     isLoading: state.entire.isLoading,
   }));
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const toDetail = (details) => {
-    dispatch(changeDetailContent(details));
-    navigate('/detail');
-  };
+
   return (
     <EntireRoomWrapper>
       <div className="title">{totalCount}</div>
       <div className="content">
         {roomList?.map((item) => {
-          return <RoomItem itemData={item} width={'20%'} toDetail={toDetail} />;
+          return <RoomItem itemData={item} width={'20%'} />;
         })}
       </div>
       {isLoading && <div className="white-cover"></div>}

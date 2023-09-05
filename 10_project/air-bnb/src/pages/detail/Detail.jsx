@@ -1,3 +1,4 @@
+import AppHeader from '@/components/app-header';
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -12,6 +13,7 @@ const Detail = memo(() => {
   console.log(content);
   return (
     <DetailWrapper>
+      <AppHeader />
       <DetailPictures pictureUrls={content.picture_urls} />
       <DetailInfo />
     </DetailWrapper>

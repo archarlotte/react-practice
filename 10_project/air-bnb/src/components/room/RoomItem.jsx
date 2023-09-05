@@ -7,6 +7,9 @@ import IconArrowLeft from '@/assets/svg/icon-arrow-left';
 import IconArrowRight from '@/assets/svg/icon-arrow-right';
 import Indicator from '../Indicator';
 import classnames from 'classnames';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { changeDetailContent } from '@/store/detailAction';
 
 const RoomItemWrapper = styled.div`
   box-sizing: border-box;
@@ -126,10 +129,10 @@ const RoomItemWrapper = styled.div`
 `;
 
 const RoomItem = memo((props) => {
-  const { itemData, width = '25%', toDetail } = props;
+  const { itemData, width = '25%' } = props;
   const carouselRef = useRef();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const handleClick = (isRight) => {
+  const handleClick = (isRight, e) => {
     let newIndex = isRight ? selectedIndex + 1 : selectedIndex - 1;
     if (newIndex < 0) {
       newIndex = itemData?.picture_urls.length - 1;
@@ -139,13 +142,19 @@ const RoomItem = memo((props) => {
     }
     setSelectedIndex(newIndex);
     isRight ? carouselRef?.current?.next() : carouselRef?.current?.prev();
+    e.stopPropagation();
   };
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toDetail = (details) => {
+    dispatch(changeDetailContent(details));
+    navigate('/detail');
+  };
   return (
     <RoomItemWrapper itemwidth={width}>
       <div className="inner">
         {itemData?.picture_urls ? (
-          <div className="slider">
+          <div className="slider" onClick={(e) => toDetail(itemData)}>
             <div className="indicator">
               <Indicator index={selectedIndex}>
                 {itemData?.picture_urls?.map((item, index) => {
@@ -158,10 +167,10 @@ const RoomItem = memo((props) => {
               </Indicator>
             </div>
             <div className="control">
-              <div className="btn left" onClick={() => handleClick(false)}>
+              <div className="btn left" onClick={(e) => handleClick(false, e)}>
                 <IconArrowLeft />
               </div>
-              <div className="btn right" onClick={() => handleClick(true)}>
+              <div className="btn right" onClick={(e) => handleClick(true, e)}>
                 <IconArrowRight />
               </div>
             </div>
@@ -182,9 +191,7 @@ const RoomItem = memo((props) => {
         )}
 
         <div className="title">{itemData.verify_info.messages.join(' . ')}</div>
-        <div className="name" onClick={(e) => toDetail(itemData)}>
-          {itemData.name}
-        </div>
+        <div className="name">{itemData.name}</div>
         <div className="price">{itemData.price_format}/night</div>
         <div className="rating">
           <Rating
